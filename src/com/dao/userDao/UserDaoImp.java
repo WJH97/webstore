@@ -1,6 +1,11 @@
 package com.dao.userDao;
 
 import com.domain.User;
+import com.utils.DBUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
+
+import java.sql.SQLException;
 
 public class UserDaoImp implements UserDao{
     @Override
@@ -24,6 +29,14 @@ public class UserDaoImp implements UserDao{
     }
 
     public boolean checkUsername(String username) {
-        return false;
+        QueryRunner queryRunner = new QueryRunner(DBUtils.getDataSource());
+        int i = 0;
+        try {
+             i = ((Long) queryRunner.query("select count(*) from user where username=?", new ScalarHandler(), username)).intValue();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return i==0;
     }
 }

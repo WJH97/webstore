@@ -16,12 +16,12 @@
 				<h1>创建一个免费的新帐户！</h1>
 			</div>
 			<p></p>
-			<form method="post" action="${pageContext.request.contextPath }/UserServlet">
+			<form method="post" action="${pageContext.request.contextPath }/UserServlet?op=regist">
 				<input type="hidden" name="op" value="regist" />
 				<ul class="left-form">
 					<li>
 						${msg.error.username }<br/>
-						<input type="text" name="username" placeholder="用户名" value="${msg.username}" required="required"/>
+						<input type="text" name="username" id="username" placeholder="用户名" value="${msg.username}" required="required" onblur="isExist"/>
 						<a href="#" class="icon ticker"> </a>
 						<div class="clear"> </div>
 					</li>
@@ -64,5 +64,31 @@
 		<!-----//end-copyright---->
 
 	</body>
+<script type="text/javascript">
+	function isExist() {
+		var usernameValue = document.getElementById("username");
+		//发送ajax异步请求
+		//1、创建XMLHttpResponse对象
+
+		var xhr = new XMLHttpRequest();
+		//2、注册状态监控回调函数：
+		xhr.onreadystatechange = function () {
+		    var responseText = xhr.responseText;
+
+		    var msg = document.getElementById("msg");
+		    if(responseText == "true"){
+		        msg.innerText="可以使用的用户名";
+			}else {
+		        msg.innerText="用户名已存在";
+			}
+		};
+		//3.建立与服务器的异步链接
+		xhr.open("GET","http://localhost:80/AjaxServlet?op=checkUsername&username="+usernameValue.value);
+		//4、发出异步请求
+		xhr.send();
+    }
+
+
+</script>
 
 </html>
